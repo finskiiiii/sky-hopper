@@ -1,18 +1,19 @@
 // Version bei Updates erhöhen, damit alle Geräte die neuen Dateien erhalten.
-const CACHE = 'sky-hopper-v8';
+const CACHE = 'sky-hopper-v9';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
-  './game.js?v=2026-10-10-4',
+  './game.js?v=2026-10-10-5',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',
   './icons/favicon-32.png',
-  './friends/friend-1.jpg?v=2026-10-10-4',
-  './friends/friend-2.jpg?v=2026-10-10-4',
-  './friends/friend-3.jpg?v=2026-10-10-4'
+  './friends/friend-1.jpg?v=2026-10-10-5',
+  './friends/friend-2.jpg?v=2026-10-10-5',
+  './friends/friend-3.jpg?v=2026-10-10-5',
+  './audio/hey-mann-polka.mp3?v=2026-10-10-5'
 ];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting()));

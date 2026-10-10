@@ -25,10 +25,8 @@
   let best = Math.max(0, Number(storage.get('sky-hopper-best-v1', 0)) || 0);
   let soundOn = storage.get('sky-hopper-sound-v1', 'true') !== 'false';
   let audioContext;
-  let musicTimer = 0;
-  let musicStep = 0;
   let musicPlaying = false;
-  let musicGain;
+  let backgroundMusic;
   let state = 'ready';
   let score = 0;
   let W = 390;
@@ -46,33 +44,13 @@
 
   const PIPE_W = 70;
   const BIRD_RADIUS = 14;
-  const ASSET_VERSION = '2026-10-10-4';
+  const ASSET_VERSION = '2026-10-10-5';
   const FRIEND_IMAGE_PATHS = [
     `./friends/friend-1.jpg?v=${ASSET_VERSION}`,
     `./friends/friend-2.jpg?v=${ASSET_VERSION}`,
     `./friends/friend-3.jpg?v=${ASSET_VERSION}`
   ];
-  const MUSIC_STEP_SECONDS = 60 / 174;
-  const MUSIC_CHORDS = [
-    { bass: 196.00, chord: [246.94, 293.66, 392.00] },
-    { bass: 196.00, chord: [246.94, 293.66, 392.00] },
-    { bass: 261.63, chord: [261.63, 329.63, 392.00] },
-    { bass: 196.00, chord: [246.94, 293.66, 392.00] },
-    { bass: 220.00, chord: [220.00, 277.18, 329.63] },
-    { bass: 293.66, chord: [293.66, 369.99, 440.00] },
-    { bass: 196.00, chord: [246.94, 293.66, 392.00] },
-    { bass: 196.00, chord: [246.94, 293.66, 392.00] }
-  ];
-  const MUSIC_MELODY = [
-    392.00, 493.88, 587.33,
-    659.25, 587.33, 493.88,
-    523.25, 659.25, 783.99,
-    739.99, 659.25, 587.33,
-    440.00, 554.37, 659.25,
-    739.99, 659.25, 554.37,
-    587.33, 493.88, 392.00,
-    493.88, 440.00, 392.00
-  ];
+  const MUSIC_PATH = `./audio/hey-mann-polka.mp3?v=${ASSET_VERSION}`;
   const friendImages = [];
   bestNode.textContent = best;
   updateSoundButton();
@@ -117,72 +95,35 @@
       oscillator.frequency.exponentialRampToValueAtTime(Math.max(80, freq * .8), now + duration);
       gain.gain.setValueAtTime(volume, now);
       gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
-      oscillator.connect(gain).connect(audioContext.destination);
+      oscillator.connect(gain).connect(context.destination);
       oscillator.start(now);
       oscillator.stop(now + duration);
     } catch { /* audio is optional */ }
   }
 
-  function playMusicTone(freq, start, duration, type, volume) {
-    const context = getAudioContext();
-    if (!context || !musicGain) return;
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = type;
-    oscillator.frequency.setValueAtTime(freq, start);
-    gain.gain.setValueAtTime(0.0001, start);
-    gain.gain.exponentialRampToValueAtTime(volume, start + .025);
-    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-    oscillator.connect(gain).connect(musicGain);
-    oscillator.start(start);
-    oscillator.stop(start + duration + .03);
+  function getBackgroundMusic() {
+    if (backgroundMusic) return backgroundMusic;
+    backgroundMusic = new Audio(MUSIC_PATH);
+    backgroundMusic.loop = true;
+    backgroundMusic.preload = 'auto';
+    backgroundMusic.volume = .68;
+    backgroundMusic.setAttribute('playsinline', '');
+    return backgroundMusic;
   }
 
-  function scheduleMusicStep() {
-    if (!musicPlaying || !soundOn) return;
-    const context = getAudioContext();
-    if (!context) return;
-    if (!musicGain) {
-      musicGain = context.createGain();
-      musicGain.gain.value = .72;
-      musicGain.connect(context.destination);
-    }
-
-    const beat = musicStep % 3;
-    const bar = Math.floor(musicStep / 3) % MUSIC_CHORDS.length;
-    const chord = MUSIC_CHORDS[bar];
-    const now = context.currentTime + .025;
-
-    if (beat === 0) {
-      playMusicTone(chord.bass, now, .2, 'sawtooth', .075);
-    } else {
-      for (const note of chord.chord) playMusicTone(note, now, .15, 'triangle', .026);
-    }
-    playMusicTone(MUSIC_MELODY[musicStep % MUSIC_MELODY.length], now, .2, 'square', beat === 0 ? .05 : .038);
-
-    musicStep = (musicStep + 1) % MUSIC_MELODY.length;
-    musicTimer = window.setTimeout(scheduleMusicStep, MUSIC_STEP_SECONDS * 1000);
-  }
-
-  function startMusic() {
+  function startMusic(restart = false) {
     if (!soundOn || musicPlaying) return;
-    const context = getAudioContext();
-    if (!context) return;
-    musicPlaying = true;
-    musicStep = 0;
-    if (context.state === 'suspended') {
-      context.resume().finally(() => {
-        if (musicPlaying && soundOn) scheduleMusicStep();
-      });
-    } else {
-      scheduleMusicStep();
+    const music = getBackgroundMusic();
+    if (restart) {
+      try { music.currentTime = 0; } catch { /* not seekable yet */ }
     }
+    musicPlaying = true;
+    music.play().catch(() => { musicPlaying = false; });
   }
 
   function stopMusic() {
     musicPlaying = false;
-    if (musicTimer) window.clearTimeout(musicTimer);
-    musicTimer = 0;
+    if (backgroundMusic) backgroundMusic.pause();
   }
 
   function resize() {
@@ -244,7 +185,7 @@
     playHint.style.animation = 'none';
     void playHint.offsetWidth;
     playHint.style.animation = '';
-    startMusic();
+    startMusic(true);
     flap();
   }
 
