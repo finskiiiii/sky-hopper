@@ -45,9 +45,7 @@
   const FRIEND_IMAGE_PATHS = [
     './friends/friend-1.jpg',
     './friends/friend-2.jpg',
-    './friends/friend-3.jpg',
-    './friends/friend-4.jpg',
-    './friends/friend-5.jpg'
+    './friends/friend-3.jpg'
   ];
   const friendImages = [];
   bestNode.textContent = best;
