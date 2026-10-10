@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#101a3d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sky Hopper">
+  <meta name="description" content="Sky Hopper – ein kleines kostenloses Arcade-Spiel für dein iPhone. Tippe, fliege und schlag deinen Highscore!">
+  <meta name="color-scheme" content="dark">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" href="./icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="./style.css">
+  <title>Sky Hopper</title>
+</head>
+<body>
+  <main class="layout">
+    <section class="game-shell" id="game" aria-label="Sky Hopper Spiel">
+      <canvas id="gameCanvas" aria-label="Flugspiel mit Hindernissen"></canvas>
+
+      <header class="topbar">
+        <div class="score-pill" aria-label="Aktueller Punktestand">
+          <span class="score-pill__label">SCORE</span>
+          <span class="score-pill__value" id="score">0</span>
+        </div>
+        <div class="score-pill score-pill--best" aria-label="Bester Punktestand">
+          <span class="score-pill__label">BEST</span>
+          <span class="score-pill__value" id="highscore">0</span>
+        </div>
+        <button type="button" class="icon-button" id="soundButton" aria-label="Ton ausschalten" aria-pressed="true">
+          <svg id="soundOn" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>
+          <svg id="soundOff" class="hidden" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 5-6 4H2v6h3l6 4V5Z"/><path d="m16 9 5 6m0-6-5 6"/></svg>
+        </button>
+      </header>
+
+      <div class="overlay" id="startOverlay">
+        <div class="brand-icon" aria-hidden="true"><span class="brand-icon__bird">●</span><span class="brand-icon__wing"></span><span class="brand-icon__beak"></span></div>
+        <p class="eyebrow">DAS KLEINE FLUGABENTEUER</p>
+        <h1><span>SKY</span><br><span class="gradient-text">HOPPER</span></h1>
+        <p class="intro">Wie weit schaffst du es durch die Hindernisse?</p>
+        <button type="button" class="primary-button" id="startButton">SPIEL STARTEN <span aria-hidden="true">➜</span></button>
+        <p class="helper">👆 Tippen oder <kbd>Leertaste</kbd> = Fliegen</p>
+      </div>
+
+      <div class="overlay hidden" id="gameOverOverlay" aria-live="polite">
+        <p class="eyebrow">RUN BEENDET</p>
+        <h2>GAME <span class="gradient-text">OVER</span></h2>
+        <div class="result-card">
+          <div><span>DEIN SCORE</span><strong id="finalScore">0</strong></div>
+          <div class="result-divider"></div>
+          <div><span>BESTLEISTUNG</span><strong id="finalBest">0</strong></div>
+        </div>
+        <p class="record-message" id="recordMessage">Noch eine Runde?</p>
+        <button type="button" class="primary-button" id="restartButton">NOCHMAL SPIELEN <span aria-hidden="true">↻</span></button>
+      </div>
+
+      <div class="play-hint hidden" id="playHint">TIPPE ZUM FLIEGEN ↑</div>
+      <div class="bottom-brand" aria-hidden="true">SKY HOPPER <span>✦</span> MADE TO PLAY</div>
+    </section>
+    <aside class="desktop-note">
+      <div class="desktop-note__tag">DEIN EIGENES MINIGAME</div>
+      <h2>One tap.<br><span>Endless fun.</span></h2>
+      <p>Tippe oder drücke die Leertaste, um nach oben zu fliegen. Weiche den Hindernissen aus und knack deinen Rekord.</p>
+      <div class="desktop-note__keys"><span>SPACE</span> ODER <span>CLICK</span></div>
+      <p class="desktop-note__sub">Auf dem iPhone einfach zum Home-Bildschirm hinzufügen.</p>
+    </aside>
+  </main>
+  <script src="./game.js" defer></script>
+</body>
+</html>
