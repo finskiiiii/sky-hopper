@@ -42,10 +42,11 @@
 
   const PIPE_W = 70;
   const BIRD_RADIUS = 14;
+  const ASSET_VERSION = '2026-10-10-2';
   const FRIEND_IMAGE_PATHS = [
-    './friends/friend-1.jpg',
-    './friends/friend-2.jpg',
-    './friends/friend-3.jpg'
+    `./friends/friend-1.jpg?v=${ASSET_VERSION}`,
+    `./friends/friend-2.jpg?v=${ASSET_VERSION}`,
+    `./friends/friend-3.jpg?v=${ASSET_VERSION}`
   ];
   const friendImages = [];
   bestNode.textContent = best;
