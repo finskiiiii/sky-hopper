@@ -46,7 +46,7 @@
 
   const PIPE_W = 70;
   const BIRD_RADIUS = 14;
-  const ASSET_VERSION = '2026-10-10-2';
+  const ASSET_VERSION = '2026-10-10-4';
   const FRIEND_IMAGE_PATHS = [
     `./friends/friend-1.jpg?v=${ASSET_VERSION}`,
     `./friends/friend-2.jpg?v=${ASSET_VERSION}`,
@@ -144,7 +144,7 @@
     if (!context) return;
     if (!musicGain) {
       musicGain = context.createGain();
-      musicGain.gain.value = .26;
+      musicGain.gain.value = .72;
       musicGain.connect(context.destination);
     }
 
@@ -154,11 +154,11 @@
     const now = context.currentTime + .025;
 
     if (beat === 0) {
-      playMusicTone(chord.bass, now, .16, 'sawtooth', .045);
+      playMusicTone(chord.bass, now, .2, 'sawtooth', .075);
     } else {
-      for (const note of chord.chord) playMusicTone(note, now, .11, 'triangle', .014);
+      for (const note of chord.chord) playMusicTone(note, now, .15, 'triangle', .026);
     }
-    playMusicTone(MUSIC_MELODY[musicStep % MUSIC_MELODY.length], now, .17, 'square', beat === 0 ? .024 : .018);
+    playMusicTone(MUSIC_MELODY[musicStep % MUSIC_MELODY.length], now, .2, 'square', beat === 0 ? .05 : .038);
 
     musicStep = (musicStep + 1) % MUSIC_MELODY.length;
     musicTimer = window.setTimeout(scheduleMusicStep, MUSIC_STEP_SECONDS * 1000);
@@ -166,9 +166,17 @@
 
   function startMusic() {
     if (!soundOn || musicPlaying) return;
+    const context = getAudioContext();
+    if (!context) return;
     musicPlaying = true;
     musicStep = 0;
-    scheduleMusicStep();
+    if (context.state === 'suspended') {
+      context.resume().finally(() => {
+        if (musicPlaying && soundOn) scheduleMusicStep();
+      });
+    } else {
+      scheduleMusicStep();
+    }
   }
 
   function stopMusic() {
