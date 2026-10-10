@@ -1,10 +1,10 @@
 // Version bei Updates erhöhen, damit alle Geräte die neuen Dateien erhalten.
-const CACHE = 'sky-hopper-v6';
+const CACHE = 'sky-hopper-v7';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
-  './game.js',
+  './game.js?v=2026-10-10-3',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',
